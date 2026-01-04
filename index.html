@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I'll Miss You</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #ff6b9d 0%, #c06c84 50%, #f67280 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.3;
+            animation: float 10s infinite ease-in-out;
+        }
+
+        .rose-petal {
+            position: absolute;
+            font-size: 25px;
+            opacity: 0.6;
+            animation: fall 15s infinite linear;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-50px) rotate(180deg);
+            }
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+            animation: fadeIn 1.5s ease-in;
+        }
+
+        h1 {
+            font-size: 4em;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            letter-spacing: 2px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 3px 3px 6px rgba(0,0,0,0.3), 0 0 20px rgba(255, 255, 255, 0.5);
+            }
+            50% {
+                text-shadow: 3px 3px 6px rgba(0,0,0,0.3), 0 0 40px rgba(255, 255, 255, 0.8);
+            }
+        }
+
+        .subtitle {
+            font-size: 1.5em;
+            font-style: italic;
+            opacity: 0.95;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Countdown Timer */
+        .countdown-section {
+            text-align: center;
+            padding: 40px 20px;
+            animation: fadeIn 2s ease-in;
+        }
+
+        .countdown-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            border: 3px solid rgba(255, 182, 193, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .countdown-title {
+            color: #ff1493;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .time-unit {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff1493 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            min-width: 100px;
+            box-shadow: 0 5px 15px rgba(255, 20, 147, 0.4);
+        }
+
+        .time-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            display: block;
+        }
+
+        .time-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            text-transform: uppercase;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+            padding: 20px;
+        }
+
+        .photo-card {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: slideUp 0.8s ease-out;
+            transform: rotate(var(--rotation));
+        }
+
+        .photo-card:nth-child(1) { --rotation: -3deg; }
+        .photo-card:nth-child(2) { --rotation: 2deg; }
+        .photo-card:nth-child(3) { --rotation: -2deg; }
+        .photo-card:nth-child(4) { --rotation: 3deg; }
+        .photo-card:nth-child(5) { --rotation: -1deg; }
+        .photo-card:nth-child(6) { --rotation: 2deg; }
+
+        .photo-container {
+            position: relative;
+            width: 280px;
+            height: 320px;
+            transition: all 0.4s ease;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            border: 5px solid rgba(255, 182, 193, 0.8);
+            cursor: pointer;
+        }
+
+        .photo-container:hover {
+            transform: translateY(-10px) scale(1.05) rotate(0deg);
+            box-shadow: 0 25px 50px rgba(255, 105, 180, 0.6);
+            border-color: #ff69b4;
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .photo-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 15px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .photo-container:hover .photo-caption {
+            transform: translateY(0);
+        }
+
+        /* Reasons Section */
+        .reasons-section {
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .reasons-title {
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .reasons-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .reason-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border: 2px solid rgba(255, 182, 193, 0.8);
+            animation: popIn 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .reason-card:nth-child(1) { animation-delay: 0.1s; }
+        .reason-card:nth-child(2) { animation-delay: 0.2s; }
+        .reason-card:nth-child(3) { animation-delay: 0.3s; }
+        .reason-card:nth-child(4) { animation-delay: 0.4s; }
+        .reason-card:nth-child(5) { animation-delay: 0.5s; }
+        .reason-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .reason-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .reason-text {
+            color: #d63384;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .special-note-section {
+            text-align: center;
+            padding: 80px 20px;
+            animation: fadeIn 2s ease-in;
+        }
+
+        .special-note-btn {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff1493 100%);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            font-size: 1.4em;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255, 20, 147, 0.4);
+            transition: all 0.3s ease;
+            font-weight: bold;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .special-note-btn::before {
+            content: '💌';
+            margin-right: 10px;
+        }
+
+        .special-note-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(255, 20, 147, 0.6);
+            background: linear-gradient(135deg, #ff1493 0%, #ff6b9d 100%);
+        }
+
+        .special-note-btn:active {
+            transform: scale(1.05);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #fff5f7 0%, #ffe4e9 100%);
+            padding: 50px;
+            border-radius: 30px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 25px 70px rgba(255, 20, 147, 0.5);
+            text-align: center;
+            position: relative;
+            border: 3px solid #ff69b4;
+        }
+
+        .modal-content::before {
+            content: '❤️';
+            font-size: 4em;
+            display: block;
+            margin-bottom: 20px;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        .modal-content h2 {
+            color: #ff1493;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.3);
+        }
+
+        .modal-content p {
+            color: #d63384;
+            line-height: 2;
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .close-btn {
+            background: #ff1493;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .close-btn:hover {
+            background: #c71585;
+            transform: scale(1.05);
+        }
+
+        /* Music Player */
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 3px solid rgba(255, 182, 193, 0.8);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .music-btn {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff1493 100%);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .music-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .music-info {
+            color: #d63384;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px) rotate(var(--rotation));
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotate(var(--rotation));
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+            }
+
+            .subtitle {
+                font-size: 1.2em;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .photo-container {
+                width: 240px;
+                height: 280px;
+            }
+
+            .countdown-timer {
+                gap: 10px;
+            }
+
+            .time-unit {
+                min-width: 80px;
+                padding: 15px;
+            }
+
+            .time-value {
+                font-size: 2em;
+            }
+
+            .special-note-btn {
+                padding: 18px 40px;
+                font-size: 1.2em;
+            }
+
+            .modal-content {
+                padding: 35px;
+            }
+
+            .modal-content h2 {
+                font-size: 2em;
+            }
+
+            .modal-content p {
+                font-size: 1.1em;
+            }
+
+            .music-player {
+                bottom: 10px;
+                left: 10px;
+                padding: 10px 15px;
+            }
+
+            .music-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2em;
+            }
+
+            .music-info {
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts" id="heartsContainer"></div>
+
+    <div class="container">
+        <header>
+            <h1>I'll Miss You</h1>
+            <p class="subtitle">Every moment without you feels incomplete</p>
+        </header>
+
+        <!-- Countdown Timer -->
+        <div class="countdown-section">
+            <div class="countdown-container">
+                <h2 class="countdown-title">Time Since We Met ❤️</h2>
+                <div class="countdown-timer">
+                    <div class="time-unit">
+                        <span class="time-value" id="days">0</span>
+                        <span class="time-label">Days</span>
+                    </div>
+                    <div class="time-unit">
+                        <span class="time-value" id="hours">0</span>
+                        <span class="time-label">Hours</span>
+                    </div>
+                    <div class="time-unit">
+                        <span class="time-value" id="minutes">0</span>
+                        <span class="time-label">Minutes</span>
+                    </div>
+                    <div class="time-unit">
+                        <span class="time-value" id="seconds">0</span>
+                        <span class="time-label">Seconds</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="gallery">
+            <div class="photo-card">
+                <div class="photo-container">
+                    <img src="images/img1.jpeg" alt="Memory 1">
+                    <div class="photo-caption">Our beautiful beginning</div>
+                </div>
+            </div>
+
+            <div class="photo-card">
+                <div class="photo-container">
+                    <img src="images/img2.jpeg" alt="Memory 2">
+                    <div class="photo-caption">Moments like these</div>
+                </div>
+            </div>
+
+            <div class="photo-card">
+                <div class="photo-container">
+                    <img src="images/img3.jpeg" alt="Memory 3">
+                    <div class="photo-caption">Forever in my heart</div>
+                </div>
+            </div>
+
+            <div class="photo-card">
+                <div class="photo-container">
+                    <img src="images/img4.jpeg" alt="Memory 4">
+                    <div class="photo-caption">You and me always</div>
+                </div>
+            </div>
+
+            <div class="photo-card">
+                <div class="photo-container">
+                    <img src="images/img5.jpeg" alt="Memory 5">
+                    <div class="photo-caption">Perfect memories</div>
+                </div>
+            </div>
+
+            <div class="photo-card">
+                <div class="photo-container">
+                    <img src="images/img6.jpeg" alt="Memory 6">
+                    <div class="photo-caption">Until we meet again</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reasons I Love You -->
+        <div class="reasons-section">
+            <h2 class="reasons-title">Why I'll Miss You</h2>
+            <div class="reasons-container">
+                <div class="reason-card">
+                    <div class="reason-icon">😊</div>
+                    <p class="reason-text">Your beautiful smile that brightens my day</p>
+                </div>
+                <div class="reason-card">
+                    <div class="reason-icon">💭</div>
+                    <p class="reason-text">The way you understand me without words</p>
+                </div>
+                <div class="reason-card">
+                    <div class="reason-icon">🌟</div>
+                    <p class="reason-text">Your presence makes everything better</p>
+                </div>
+                <div class="reason-card">
+                    <div class="reason-icon">💕</div>
+                    <p class="reason-text">The warmth of your hugs</p>
+                </div>
+                <div class="reason-card">
+                    <div class="reason-icon">🎵</div>
+                    <p class="reason-text">Our late night conversations</p>
+                </div>
+                <div class="reason-card">
+                    <div class="reason-icon">✨</div>
+                    <p class="reason-text">Every little moment we share</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="special-note-section">
+            <button class="special-note-btn" id="specialNoteBtn">Click Me For Special Note</button>
+        </div>
+    </div>
+
+    <!-- Music Player -->
+    <div class="music-player">
+        <button class="music-btn" id="musicBtn">🎵</button>
+        <div class="music-info">Background Music</div>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h2>My Special Note</h2>
+            <p>
+                Soon there'll be distance between us, and I know I'll miss you deeply.
+                Not a day will pass without thinking of you.
+                Until we meet again, you'll always be in my heart. I Love You so much..
+            </p>
+            <button class="close-btn" id="closeBtn">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Floating hearts and rose petals
+        const heartsContainer = document.getElementById('heartsContainer');
+        const heartSymbols = ['❤️', '💕', '💖', '💗', '💓', '💝'];
+        const roseSymbols = ['🌹', '🌺', '🌸'];
+        
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.top = Math.random() * 100 + '%';
+            heart.style.animationDelay = Math.random() * 5 + 's';
+            heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            heartsContainer.appendChild(heart);
+        }
+
+        function createRosePetal() {
+            const petal = document.createElement('div');
+            petal.className = 'rose-petal';
+            petal.textContent = roseSymbols[Math.floor(Math.random() * roseSymbols.length)];
+            petal.style.left = Math.random() * 100 + '%';
+            petal.style.animationDelay = Math.random() * 5 + 's';
+            petal.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            heartsContainer.appendChild(petal);
+            
+            setTimeout(() => petal.remove(), 15000);
+        }
+
+        for (let i = 0; i < 15; i++) {
+            createHeart();
+        }
+
+        setInterval(createRosePetal, 2000);
+
+        // Countdown Timer
+        const startDate = new Date('2025-06-01').getTime(); // Change this to your special date
+        
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = now - startDate;
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = hours;
+            document.getElementById('minutes').textContent = minutes;
+            document.getElementById('seconds').textContent = seconds;
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        // Special note modal
+        const modal = document.getElementById('modal');
+        const specialNoteBtn = document.getElementById('specialNoteBtn');
+        const closeBtn = document.getElementById('closeBtn');
+
+        specialNoteBtn.addEventListener('click', () => {
+            modal.style.display = 'flex';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+    </script>
+</body>
+</html>
